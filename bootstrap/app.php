@@ -41,6 +41,11 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+// Ajout du middleware statefulApi pour Sanctum
+$app->withMiddleware(function ($middleware) {
+    $middleware->statefulApi();
+});
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application
