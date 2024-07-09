@@ -42,9 +42,9 @@ $app->singleton(
 );
 
 // Ajout du middleware statefulApi pour Sanctum
-$app->withMiddleware(function ($middleware) {
-    $middleware->statefulApi();
-});
+// $app->withMiddleware(function ($middleware) {
+//     $middleware->statefulApi();
+// });
 
 /*
 |--------------------------------------------------------------------------

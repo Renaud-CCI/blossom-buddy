@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,18 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout']);
-});
+
+// Registration
+Route::post('/register', [AuthController::class, 'register']);
+
+// Login
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/', function () { return view('welcome');})->name('welcome');
+
+// Logout
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+
+// Test route
 Route::get('/test', function () {
     return response()->json(['message' => 'This is a test route']);
 });
