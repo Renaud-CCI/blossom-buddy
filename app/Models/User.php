@@ -57,9 +57,11 @@ class User extends Authenticatable
 
     /**
      * @OA\Property(
-     *     title="Password",
-     *     description="Hashed password of the user",
-     *     format="password"
+     *     title="Hidden Attributes",
+     *     description="Attributes that should be hidden for arrays",
+     *     type="array",
+     *     @OA\Items(type="string"),
+     *     example={"password", "remember_token"}
      * )
      *
      * @var array<int, string>

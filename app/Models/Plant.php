@@ -13,6 +13,28 @@ use App\Models\PlantInterface;
  *     description="Plant model",
  *     @OA\Xml(
  *         name="Plant"
+ *     ),
+ *     @OA\Property(
+ *         property="common_name",
+ *         type="string",
+ *         title="Common Name",
+ *         description="Common name of the plant",
+ *         example="Ficus"
+ *     ),
+ *     @OA\Property(
+ *         property="watering_general_benchmark",
+ *         type="object",
+ *         description="General benchmark for watering the plant",
+ *         @OA\Property(
+ *             property="value",
+ *             type="integer",
+ *             example=5
+ *         ),
+ *         @OA\Property(
+ *             property="unit",
+ *             type="string",
+ *             example="days"
+ *         )
  *     )
  * )
  */
@@ -21,27 +43,11 @@ class Plant extends Model implements PlantInterface
     use HasFactory;
 
     /**
-     * @OA\Property(
-     *     title="Common Name",
-     *     description="Common name of the plant",
-     *     example="Ficus"
-     * )
-     *
      * @var string
      */
     protected $fillable = ['common_name', 'watering_general_benchmark'];
 
     /**
-     * @OA\Property(
-     *     title="Watering General Benchmark",
-     *     description="General benchmark for watering the plant",
-     *     type="array",
-     *     @OA\Items(
-     *         type="string",
-     *         example="Every 2 days"
-     *     )
-     * )
-     *
      * @var array
      */
     protected $casts = [

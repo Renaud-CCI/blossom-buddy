@@ -1,0 +1,332 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Blosson Buddy API",
+        "description": "API du TP Blossom Buddy",
+        "contact": {
+            "name": "Support Technique",
+            "email": "contact@blossom-buddy.fr"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/plant": {
+            "get": {
+                "tags": [
+                    "Plants"
+                ],
+                "summary": "Display a listing of plants",
+                "description": "Display a listing of the resource.",
+                "operationId": "7c23a6e1579ac9f5885edf17b4eddace",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Plant"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Plants"
+                ],
+                "summary": "Store a newly created plant",
+                "description": "Store a newly created resource in storage.",
+                "operationId": "bdf6e893a6c68eac93ffa14b741ea500",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Plant"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Plant created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Plant"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/api/plant/{name}": {
+            "get": {
+                "tags": [
+                    "Plants"
+                ],
+                "summary": "Display the specified plant by name",
+                "description": "Display the specified resource.",
+                "operationId": "c68204ec53d1c751570c19b7d8eb112c",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/api/plant/{id}": {
+            "delete": {
+                "tags": [
+                    "Plants"
+                ],
+                "summary": "Remove the specified plant from storage",
+                "description": "Remove the specified resource from storage.",
+                "operationId": "533f3fb60e61315d56125d3e1efeb83b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Successful operation"
+                    },
+                    "default": {
+                        "description": "unexpected error"
+                    }
+                }
+            }
+        },
+        "/user/plant": {
+            "post": {
+                "tags": [
+                    "UserPlant"
+                ],
+                "summary": "Ajoute une plante à la liste des plantes d'un utilisateur",
+                "operationId": "b4273403948f66e51d9e0bbc5532127b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "plant_id"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "plant_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Rose",
+                                        "nullable": true
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "example": "Paris",
+                                        "nullable": true
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "example": "France",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Plante ajoutée avec succès"
+                    },
+                    "default": {
+                        "description": "Erreur inattendue"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/user/plant/{id}": {
+            "delete": {
+                "tags": [
+                    "UserPlant"
+                ],
+                "summary": "Supprime une plante de la liste des plantes d'un utilisateur",
+                "operationId": "b8bc9546b7a4d8703ee245e3fd461fe7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Plante supprimée avec succès"
+                    },
+                    "default": {
+                        "description": "Erreur inattendue"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Plant": {
+                "title": "Plant",
+                "description": "Plant model",
+                "properties": {
+                    "common_name": {
+                        "title": "Common Name",
+                        "description": "Common name of the plant",
+                        "type": "string",
+                        "example": "Ficus"
+                    },
+                    "watering_general_benchmark": {
+                        "description": "General benchmark for watering the plant",
+                        "properties": {
+                            "value": {
+                                "type": "integer",
+                                "example": 5
+                            },
+                            "unit": {
+                                "type": "string",
+                                "example": "days"
+                            }
+                        },
+                        "type": "object"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Plant"
+                }
+            },
+            "User": {
+                "title": "User",
+                "description": "User model",
+                "properties": {
+                    "fillable": {
+                        "title": "Password",
+                        "description": "Password of the user",
+                        "type": "string",
+                        "format": "password",
+                        "example": "secret"
+                    },
+                    "hidden": {
+                        "title": "Hidden Attributes",
+                        "description": "Attributes that should be hidden for arrays",
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": [
+                            "password",
+                            "remember_token"
+                        ]
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "User"
+                }
+            },
+            "UserPlant": {
+                "title": "UserPlant",
+                "description": "UserPlant model, representing the many-to-many relationship between users and plants with additional information",
+                "properties": {
+                    "user_id": {
+                        "description": "ID of the user",
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "plant_id": {
+                        "description": "ID of the plant",
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "name": {
+                        "description": "Name of the plant",
+                        "type": "string",
+                        "example": "Rose"
+                    },
+                    "city": {
+                        "description": "City where the plant is located",
+                        "type": "string",
+                        "example": "Paris"
+                    },
+                    "country": {
+                        "description": "Country where the plant is located",
+                        "type": "string",
+                        "example": "France"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "UserPlant"
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Plants",
+            "description": "Plants"
+        },
+        {
+            "name": "UserPlant",
+            "description": "UserPlant"
+        }
+    ]
+}
