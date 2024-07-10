@@ -246,11 +246,17 @@ Dans routes/api.php, définissez les routes suivantes :
     - Authentification : **requise** (utiliser le middleware auth:sanctum)
     - Principe : l'utilisateur entre le nom d'une plante dans le formulaire, la ville dans laquelle il est, et le front-end nous envoie ces informations ainsi que le token d'auth de l'utilisateur. Si les deux sont bon on ajoute en base de données, le fait que tel utilisateur possède tel plante. Sinon on retourne des erreurs appropriés.
 
-6. Permettre à l'utilisateur de supprimer une plante qu'il a indiqué posséder
+6. Permet de récupérer toutes les plantes possédé par un utilisateur
+    - Endpoint : /user/plants
+    - Méthode : GET
+    - Authentification : **requise** (utiliser le middleware auth:sanctum)
+    - Principe : permet de récupérer toutes les plantes qu'un utilisateur possède pour faire un affichage.
+
+7. Permettre à l'utilisateur de supprimer une plante qu'il a indiqué posséder
     - Endpoint : /user/plant/{id}
     - Méthode : DELETE
     - Authentification : **requise** (utiliser le middleware auth:sanctum)
-    - Principe : l'utilisateur supprime une plante de la liste des plantes qu'il possède. On reçoit l'id de la plante et le token de l'utilisateur.
+    - Principe : l'utilisateur supprime une plante de la liste des plantes qu'il possède. On reçoit l'id de la relation Plant - User et le token de l'utilisateur.
 
 Une fois ces routes crée, il faut faire les controlleurs pour les plantes "PlantController", et pour la gestion des plantes via les actions de l'utilisateur : "UserPlantController" puis **Implémentez** les méthodes nécessaires sur chacun des routes.
 
