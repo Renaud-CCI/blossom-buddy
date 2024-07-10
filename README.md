@@ -244,7 +244,7 @@ Dans routes/api.php, définissez les routes suivantes :
     - Endpoint : /user/plant
     - Méthode : POST
     - Authentification : **requise** (utiliser le middleware auth:sanctum)
-    - Principe : l'utilisateur entre le nom d'une plante dans le formulaire, la ville et le pays dans laquelle il est, et le front-end nous envoie ces informations ainsi que le token d'auth de l'utilisateur. Si les deux sont bon on ajoute en base de données, le fait que tel utilisateur possède tel plante. Sinon on retourne des erreurs appropriés.
+    - Principe : l'utilisateur entre le nom d'une plante dans le formulaire, la ville dans laquelle il est, et le front-end nous envoie ces informations ainsi que le token d'auth de l'utilisateur. Si les deux sont bon on ajoute en base de données, le fait que tel utilisateur possède tel plante. Sinon on retourne des erreurs appropriés.
 
 6. Permettre à l'utilisateur de supprimer une plante qu'il a indiqué posséder
     - Endpoint : /user/plant/{id}
@@ -304,7 +304,7 @@ Une fois que vous aurez pris en main l'API, modifiez votre Model Plant et mettez
 
 #### Création d'un Service pour l'API des Plantes
 
-Créez un service dédié pour interagir avec l'API des plantes. Ce service sera responsable de faire les requêtes API, de filtrer les données nécessaires et de les stocker dans la base de données.
+Créez un service dédié et son interface pour interagir avec l'API des plantes. Ce service sera responsable de faire les **requêtes API**, de **filtrer les données** nécessaires et de les **stocker** dans la base de données.
 
 Je vous mets encore une fois un Medium qui vous permettra de comprendre la marche à suivre : [Understanding Laravel Service Classes: A Comprehensive Guide](https://medium.com/@laravelprotips/understanding-laravel-service-classes-a-comprehensive-guide-1f22310c70bd)
 
@@ -320,6 +320,56 @@ Quant à l'utilisation de ce service il existe plusieurs solutions, en voici que
 Nous choisirons la dernière solution proposée. vous créerez une route /plant/update qui appelera une fonction du PlantController que vous créerez pour l'occasion. Cette fonction fera appelle au service de mise à jour de notre base de donnée de plantes.
 
 ### Gestion de l'API Météo
-https://www.weatherapi.com/
+
+Pour notre application Blossom Buddy, nous allons utiliser l'API de [WeatherAPI](https://www.weatherapi.com/) pour obtenir les données météorologiques nécessaires afin de déterminer le meilleur moment pour arroser les plantes. La stratégie de gestion du caching pour l'API météo sera différente de celle utilisée pour l'API des plantes. Voici les étapes à suivre :
+
+1. Lorsqu'un utilisateur ajoute une nouvelle plante, nous vérifierons si nous avons les données météorologiques en cache.
+
+2. Si les données ne sont pas en cache, nous ferons une requête à l'API météo pour obtenir les informations nécessaires.
+
+3. Nous mettrons ensuite en cache ces données pendant 2 heures.
+
+#### Étapes pour Intégrer et Cacher les Données Météo
+
+* Inscrivez-vous sur WeatherAPI et obtenez une clé API. Nous en aurons besoin pour authentifier nos requêtes.
+
+* Comme pour la gestion de l'API des plantes, créez un Service et son interface pour l'API Météo qui sera appelé à chaque fois que l'on aura besoin de la météo, et qui nous enverra soit les données que l'on a en cache, soit des données toute fraîche en fonction du contexte.
+Ressource : [Cache](https://laravel.com/docs/11.x/cache#obtaining-a-cache-instance).
+
+* Injecter le service météo dans PlantController et l'utiliser lors de l'ajout d'une plante par un utilisateur (utiliser la ville renseignée dans le formulaire par l'utilisateur dans le service pour donner la météo du lieu concerné).
+
+## Le Prochain Arrosage 🚿
+
+Maintenant que nous avons intégré les données des plantes et les informations météorologiques, nous pouvons calculer et retourner le temps avant le prochain arrosage pour chaque plante. Cette fonctionnalité est cruciale pour notre application **Blossom Budy**, car elle fournit aux utilisateurs des recommandations personnalisées sur l'entretien de leurs plantes.
+
+### Étape pour Calculer le Temps Avant le Prochain Arrosage
+
+1. L'utilisateur entre le nom anglais de la plante qu'il a et la ville dans laquelle il habite.
+2. On récupère les données de la plante en question, stockées en BDD.
+3. Combiner les informations sur les plantes et la météo pour calculer quand arroser la plante.
+4. Enregistrer en base de donnée que tel utilisateur possède la plante.
+5. Retourner à l'utilisateur dans combien de temps il devra arroser sa plante.
+
+## Allons plus loin ! 
+
+Maintenant que nous avons mis en place les fonctionnalités de base de notre application, nous pouvons aller encore plus loin pour améliorer l'expérience utilisateur. Une fonctionnalité supplémentaire qui serait extrêmement utile est l'envoi d'un email de rappel à l'utilisateur lorsque le temps avant le prochain arrosage est écoulé. Cela permet à l'utilisateur de recevoir une notification à temps pour arroser ses plantes, sans avoir à vérifier constamment l'application.
+
+Vous avez dû au début de ce TP configurer votre environnement pour utiliser Mailtrap ou un service similaire, nous allons pouvoir configurer une notification Laravel.
+
+### Créer une Notification d'Arrosage 🔔
+
+Le principe est simple, nous allons utiliser les notifications Laravel (voir [Notifications](https://laravel.com/docs/11.x/notifications)), afin de programmer l'envoi de mails.
+
+Créer un fichier de notification WateringReminder qui prendra en paramètre la plante et le temps avant le prochain arrosage, que l'on a calculé précédemment.
+
+Planifiez l'envoi de rappels (voir [Task Scheduling](https://laravel.com/docs/11.x/scheduling)).
+
+## Améliorations possible
+
+* Utilisez les données GPS (latitude, longitude) plutôt que la ville pour être plus précis sur la récupération de la météo.
+* Peaufiner l'algorithme de calcul du temps avant le prochain arrosage (ajouter de nouveaux paramètres qui pourraient affecter le temps d'arrosage, comme par exemple si la plante est exposée au soleil ou non...).
+* Être capable de traduire la demande de l'utilisateur dans une langue qu'il comprend (par exemple l'utilisateur entre en français le nom d'une plante alors qu'on l'a sauvegardé en BDD en anglais -> il faut que ça marche quand même).
+
+
 
 ## To be continued ...
