@@ -2,12 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Plant;
 use Illuminate\Http\Request;
 use \Illuminate\Http\JsonResponse;
+use App\Models\Plant;
+use App\Repositories\PlantRepositoryInterface;
+use App\Repositories\PlantRepository;
 
 class PlantController extends Controller
 {
+    private PlantRepositoryInterface $plantRepository;
+
+    public function __construct(PlantRepository $plantRepository)
+    {
+        $this->plantRepository = $plantRepository;
+    }
+
     /**
      * Display a listing of the resource.
      * 
@@ -31,8 +40,7 @@ class PlantController extends Controller
      */
     public function index(): JsonResponse
     {
-        $plants = Plant::all();
-        return response()->json($plants);
+        return response()->json($this->plantRepository->index());
     }
 
     /**
@@ -59,7 +67,7 @@ class PlantController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        $plant = Plant::create($request->all());
+        $plant = $this->plantRepository->create($request->all());
         return response()->json($plant, 201);
     }
 
@@ -88,9 +96,9 @@ class PlantController extends Controller
      *     ),
      * )
      */
-    public function showByName($name): JsonResponse
+    public function showByName(string $name): JsonResponse
     {
-        $plant = Plant::where('common_name', $name)->first();
+        $plant = $this->plantRepository->findByName($name);
         if (!$plant) {
             return response()->json(['error' => 'Plant not found'], 404);
         }
@@ -102,7 +110,8 @@ class PlantController extends Controller
      */
     public function update(Request $request, Plant $plant)
     {
-        //
+        $plant->update($request->all());
+        return response()->json($plant, 200);
     }
 
     /**
@@ -130,13 +139,12 @@ class PlantController extends Controller
      *     ),
      * )
      */
-    public function destroy($id)
+    public function destroy(int $id): JsonResponse
     {
-        $plant = Plant::find($id);
-        if (!$plant) {
+        $deleted = $this->plantRepository->delete($id);
+        if (!$deleted) {
             return response()->json(['error' => 'Plant not found'], 404);
         }
-        $plant->delete();
         return response()->json(null, 204);
     }
 }
