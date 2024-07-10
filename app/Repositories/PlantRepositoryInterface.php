@@ -13,6 +13,8 @@ interface PlantRepositoryInterface
 
     public function findByName(string $name): ?Plant;
 
+    public function findOrCreateByNameAndBenchmark($name, $benchmark): Plant;
+
     public function update(int $id, array $data): bool;
 
     public function delete(int $id): bool;

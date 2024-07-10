@@ -1,32 +1,50 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Models\UserPlant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use \Illuminate\Http\JsonResponse;
+use App\Models\UserPlant;
+use App\Models\Plant;
+use App\Repositories\PlantRepositoryInterface;
+use App\Repositories\PlantRepository;
+use App\Repositories\UserPlantRepositoryInterface;
+use App\Repositories\UserPlantRepository;
 
 class UserPlantController extends Controller
 {
+    private PlantRepositoryInterface $plantRepository;
+    private UserPlantRepositoryInterface $userPlantRepository;
+
+    public function __construct(PlantRepository $plantRepository, UserPlantRepository $userPlantRepository)
+    {
+        $this->plantRepository = $plantRepository;
+        $this->userPlantRepository = $userPlantRepository;
+    }
+
     /**
      * @OA\Post(
      *     path="/user/plant",
-     *     summary="Ajoute une plante à la liste des plantes d'un utilisateur",
+     *     summary="Store a newly created plant for the user",
      *     tags={"UserPlant"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"user_id", "plant_id"},
-     *             @OA\Property(property="user_id", type="integer", example=1),
-     *             @OA\Property(property="plant_id", type="integer", example=2),
-     *             @OA\Property(property="name", type="string", example="Rose", nullable=true),
-     *             @OA\Property(property="city", type="string", example="Paris", nullable=true),
-     *             @OA\Property(property="country", type="string", example="France", nullable=true),
+     *             required={"name", "city"},
+     *             @OA\Property(property="name", type="string", example="Rose"),
+     *             @OA\Property(property="city", type="string", example="Paris")
      *         ),
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Plante ajoutée avec succès",
+     *         description="Plante ajoutée avec succès ou UserPlant déjà enregistrée",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Plante ajoutée avec succès"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Données invalides fournies",
      *     ),
      *     @OA\Response(
      *         response="default",
@@ -37,24 +55,68 @@ class UserPlantController extends Controller
      */
     public function store(Request $request): JsonResponse
     {
-        if (!Auth::check()) {
-            return response()->json(['error' => 'Unauthenticated'], 401);
-        }
-
         $validated = $request->validate([
             'name' => 'required|string',
             'city' => 'required|string',
-            'country' => 'required|string',
         ]);
 
-        $userPlant = new UserPlant();
-        $userPlant->user_id = Auth::id();
-        $userPlant->name = $validated['name'];
-        $userPlant->city = $validated['city'];
-        $userPlant->country = $validated['country'];
-        $userPlant->save();
+        $plant = $this->plantRepository->findByName($validated['name']);
 
-        return response()->json(['message' => 'Plante ajoutée avec succès'], 200);
+        if (!$plant) {
+            $plantData = [
+                'common_name' => $validated['name'],
+                'watering_general_benchmark' => json_encode([
+                    'value' => rand(5, 7),
+                    'unit' => 'days',
+                ]),
+            ];
+            $plant = $this->plantRepository->create($plantData);
+        }
+
+        $result = $this->userPlantRepository->findOrCreate([
+            'user_id' => Auth::id(),
+            'plant_id' => $plant->id,
+            'name' => $validated['name'],
+            'city' => $validated['city'],
+        ]);
+    
+        if ($result['created']) {
+            return response()->json(['message' => 'Plante ajoutée avec succès'], 200);
+        } else {
+            return response()->json(['message' => 'UserPlant déjà enregistrée'], 200);
+        }
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/user/plants",
+     *     summary="Récupère toutes les plantes possédées par un utilisateur",
+     *     tags={"UserPlant"},
+     *     security={{ "sanctum": {} }},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Opération réussie",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/UserPlant")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Non autorisé"
+     *     )
+     * )
+     */
+    public function getUserPlants(): JsonResponse
+    {
+        $userId = Auth::id();
+        $plants = $this->userPlantRepository->findByUserId($userId);
+
+        if ($plants->isEmpty()) {
+            return response()->json(['message' => 'Pas de données pour cet utilisateur'], 200);
+        }
+
+        return response()->json($plants, 200);
     }
 
     /**

@@ -132,7 +132,7 @@
                 "tags": [
                     "UserPlant"
                 ],
-                "summary": "Ajoute une plante à la liste des plantes d'un utilisateur",
+                "summary": "Ajoute une plante à la liste des plantes d'un utilisateur ou informe si elle existe déjà",
                 "operationId": "b4273403948f66e51d9e0bbc5532127b",
                 "requestBody": {
                     "required": true,
@@ -140,27 +140,17 @@
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "user_id",
-                                    "plant_id"
+                                    "name",
+                                    "city"
                                 ],
                                 "properties": {
-                                    "user_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "plant_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
                                     "name": {
                                         "type": "string",
-                                        "example": "Rose",
-                                        "nullable": true
+                                        "example": "Rose"
                                     },
                                     "city": {
                                         "type": "string",
-                                        "example": "Paris",
-                                        "nullable": true
+                                        "example": "Paris"
                                     },
                                     "country": {
                                         "type": "string",
@@ -175,7 +165,23 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Plante ajoutée avec succès"
+                        "description": "Plante ajoutée avec succès ou UserPlant déjà enregistrée",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Plante ajoutée avec succès"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Données invalides fournies"
                     },
                     "default": {
                         "description": "Erreur inattendue"
@@ -305,11 +311,6 @@
                         "description": "City where the plant is located",
                         "type": "string",
                         "example": "Paris"
-                    },
-                    "country": {
-                        "description": "Country where the plant is located",
-                        "type": "string",
-                        "example": "France"
                     }
                 },
                 "type": "object",

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('plant_id')->constrained()->onDelete('cascade');
             $table->string('name')->nullable();
             $table->string('city')->nullable();
-            $table->string('country')->nullable();
             $table->timestamps();
         });
     }

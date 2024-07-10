@@ -29,6 +29,15 @@ class PlantRepository implements PlantRepositoryInterface
         return Plant::where('common_name', $name)->first();
     }
 
+    public function findOrCreateByNameAndBenchmark($name, $benchmark): Plant
+    {
+        $plant = Plant::where('common_name', $name)->where('watering_general_benchmark', $benchmark)->first();
+        if (!$plant) {
+            $plant = Plant::create(['common_name' => $name, 'watering_general_benchmark' => $benchmark]);
+        }
+        return $plant;
+    }
+
     public function update(int $id, array $data): bool
     {
         $plant = Plant::find($id);

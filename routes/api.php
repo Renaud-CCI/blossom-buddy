@@ -52,5 +52,8 @@ Route::delete('/plant/{id}', [PlantController::class, 'destroy']);
 // Permettre à un utilisateur d'entrer la plante qu'il a et l'endroit où il est
 Route::post('/user/plant', [UserPlantController::class, 'store'])->middleware('auth:sanctum');
 
+// Retourne toutes les plantes d'un utilisateur
+Route::get('/user/plants', [UserPlantController::class, 'getUserPlants'])->middleware('auth:sanctum');
+
 // Permettre à l'utilisateur de supprimer une plante qu'il a indiqué posséder
 Route::delete('/user/plant/{id}', [UserPlantController::class, 'destroy'])->middleware('auth:sanctum');

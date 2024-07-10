@@ -37,12 +37,6 @@ use App\Models\Plant;
  *         description="City where the plant is located",
  *         example="Paris"
  *     ),
- *     @OA\Property(
- *         property="country",
- *         type="string",
- *         description="Country where the plant is located",
- *         example="France"
- *     )
  * )
  */
 class UserPlant extends Model
@@ -51,7 +45,7 @@ class UserPlant extends Model
 
     protected $table = 'user_plant';
     public $timestamps = true;
-    protected $fillable = ['user_id', 'plant_id', 'name', 'city', 'country'];
+    protected $fillable = ['user_id', 'plant_id', 'name', 'city'];
 
     public function user()
     {
