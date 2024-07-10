@@ -49,6 +49,9 @@ Route::get('/plant/{name}', [PlantController::class, 'showByName']);
 // Supprimer une plante par son ID
 Route::delete('/plant/{id}', [PlantController::class, 'destroy']);
 
+// Mettre à jour la liste des plantes en base de données
+Route::put('/plant/update', [PlantController::class, 'updatePlants']);
+
 // Permettre à un utilisateur d'entrer la plante qu'il a et l'endroit où il est
 Route::post('/user/plant', [UserPlantController::class, 'store'])->middleware('auth:sanctum');
 

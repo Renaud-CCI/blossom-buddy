@@ -22,6 +22,7 @@ class PlantFactory extends Factory
                 'value' => $this->faker->numberBetween(5, 7),
                 'unit' => 'days',
             ]),
+            'image' => $this->faker->imageUrl(),
         ];
     }
 }

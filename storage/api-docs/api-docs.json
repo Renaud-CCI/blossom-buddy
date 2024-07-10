@@ -127,12 +127,56 @@
                 }
             }
         },
+        "/api/plant/update": {
+            "put": {
+                "tags": [
+                    "Plants"
+                ],
+                "summary": "Update the list of plants in the database",
+                "description": "Update the list of plants in the database.",
+                "operationId": "4dc209d8594b83ab6006d623f2254478",
+                "responses": {
+                    "200": {
+                        "description": "Plants updated",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Plants updated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "default": {
+                        "description": "unexpected error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/plant": {
             "post": {
                 "tags": [
                     "UserPlant"
                 ],
-                "summary": "Ajoute une plante à la liste des plantes d'un utilisateur ou informe si elle existe déjà",
+                "summary": "Store a newly created plant for the user",
                 "operationId": "b4273403948f66e51d9e0bbc5532127b",
                 "requestBody": {
                     "required": true,
@@ -151,11 +195,6 @@
                                     "city": {
                                         "type": "string",
                                         "example": "Paris"
-                                    },
-                                    "country": {
-                                        "type": "string",
-                                        "example": "France",
-                                        "nullable": true
                                     }
                                 },
                                 "type": "object"
@@ -165,14 +204,30 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "Plante ajoutée avec succès ou UserPlant déjà enregistrée",
+                        "description": "UserPlant déjà enregistrée",
                         "content": {
                             "application/json": {
                                 "schema": {
                                     "properties": {
                                         "message": {
                                             "type": "string",
-                                            "example": "Plante ajoutée avec succès"
+                                            "example": "UserPlant déjà enregistrée"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cette plante est inconnue",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cette plante est inconnue"
                                         }
                                     },
                                     "type": "object"
@@ -185,6 +240,38 @@
                     },
                     "default": {
                         "description": "Erreur inattendue"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/user/plants": {
+            "get": {
+                "tags": [
+                    "UserPlant"
+                ],
+                "summary": "Récupère toutes les plantes possédées par un utilisateur",
+                "operationId": "8e8b1acfac7d55eed1dec701def9af41",
+                "responses": {
+                    "200": {
+                        "description": "Opération réussie",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UserPlant"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Non autorisé"
                     }
                 },
                 "security": [
@@ -252,6 +339,12 @@
                             }
                         },
                         "type": "object"
+                    },
+                    "image": {
+                        "title": "Image URL",
+                        "description": "URL of the plant image",
+                        "type": "string",
+                        "example": "https://example.com/images/ficus.jpg"
                     }
                 },
                 "type": "object",

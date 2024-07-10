@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('common_name');
             $table->json('watering_general_benchmark');
+            $table->string('image');
             $table->timestamps();
         });
     }

@@ -35,6 +35,13 @@ use App\Models\PlantInterface;
  *             type="string",
  *             example="days"
  *         )
+ *     ),
+ *     @OA\Property(
+ *         property="image",
+ *         type="string",
+ *         title="Image URL",
+ *         description="URL of the plant image",
+ *         example="https://example.com/images/ficus.jpg"
  *     )
  * )
  */
@@ -43,17 +50,26 @@ class Plant extends Model implements PlantInterface
     use HasFactory;
 
     /**
-     * @var string
+     * The attributes that are mass assignable.
+     *
+     * @var array<string>
      */
-    protected $fillable = ['common_name', 'watering_general_benchmark'];
+    protected $fillable = ['common_name', 'watering_general_benchmark', 'image'];
 
     /**
-     * @var array
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
      */
     protected $casts = [
         'watering_general_benchmark' => 'array',
     ];
 
+    /**
+     * The users that belong to the plant.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function users()
     {
         return $this->belongsToMany(User::class, 'user_plant');

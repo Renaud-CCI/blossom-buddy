@@ -7,14 +7,17 @@ use \Illuminate\Http\JsonResponse;
 use App\Models\Plant;
 use App\Repositories\PlantRepositoryInterface;
 use App\Repositories\PlantRepository;
+use App\Services\PlantService;
 
 class PlantController extends Controller
 {
     private PlantRepositoryInterface $plantRepository;
+    private PlantService $plantService;
 
-    public function __construct(PlantRepository $plantRepository)
+    public function __construct(PlantRepository $plantRepository, PlantService $plantService)
     {
         $this->plantRepository = $plantRepository;
+        $this->plantService = $plantService;
     }
 
     /**
@@ -146,5 +149,48 @@ class PlantController extends Controller
             return response()->json(['error' => 'Plant not found'], 404);
         }
         return response()->json(null, 204);
+    }
+
+    /**
+     * Update the list of plants in the database.
+     * 
+     * @OA\Put(
+     *     path="/api/plant/update",
+     *     summary="Update the list of plants in the database",
+     *     tags={"Plants"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Plants updated",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Plants updated"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response="default",
+     *         description="unexpected error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="error",
+     *                 type="string",
+     *                 example="An unexpected error occurred"
+     *             )
+     *         )
+     *     )
+     * )
+     */
+    public function updatePlants(): JsonResponse
+    {
+        try {
+            $this->plantService->updatePlants();
+            return response()->json(['message' => 'Plants updated'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }

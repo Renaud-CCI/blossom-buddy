@@ -37,9 +37,16 @@ class UserPlantController extends Controller
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Plante ajoutée avec succès ou UserPlant déjà enregistrée",
+     *         description="UserPlant déjà enregistrée",
      *         @OA\JsonContent(
-     *             @OA\Property(property="message", type="string", example="Plante ajoutée avec succès"),
+     *             @OA\Property(property="message", type="string", example="UserPlant déjà enregistrée"),
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Cette plante est inconnue",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Cette plante est inconnue"),
      *         )
      *     ),
      *     @OA\Response(
@@ -59,20 +66,13 @@ class UserPlantController extends Controller
             'name' => 'required|string',
             'city' => 'required|string',
         ]);
-
+    
         $plant = $this->plantRepository->findByName($validated['name']);
-
+    
         if (!$plant) {
-            $plantData = [
-                'common_name' => $validated['name'],
-                'watering_general_benchmark' => json_encode([
-                    'value' => rand(5, 7),
-                    'unit' => 'days',
-                ]),
-            ];
-            $plant = $this->plantRepository->create($plantData);
+            return response()->json(['message' => 'Cette plante est inconnue'], 404);
         }
-
+    
         $result = $this->userPlantRepository->findOrCreate([
             'user_id' => Auth::id(),
             'plant_id' => $plant->id,
