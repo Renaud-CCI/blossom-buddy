@@ -26,16 +26,35 @@ use App\Models\Plant;
  *         example=2
  *     ),
  *     @OA\Property(
- *         property="name",
+ *         property="plant_name",
  *         type="string",
  *         description="Name of the plant",
  *         example="Rose"
+ *     ),
+ *     @OA\Property(
+ *         property="plant_title",
+ *         type="string",
+ *         description="Title of the plant",
+ *         example="Queen of the Garden"
+ *     ),
+ *     @OA\Property(
+ *         property="last_watering",
+ *         type="string",
+ *         format="date-time",
+ *         description="The last date the plant was watered",
+ *         example="2023-04-01T00:00:00Z"
  *     ),
  *     @OA\Property(
  *         property="city",
  *         type="string",
  *         description="City where the plant is located",
  *         example="Paris"
+ *     ),
+ *    @OA\Property(
+ *         property="is_outdoor",
+ *         type="boolean",
+ *         description="Indicates if the plant is located outdoors",
+ *         example=true
  *     ),
  * )
  */
@@ -45,7 +64,7 @@ class UserPlant extends Model
 
     protected $table = 'user_plant';
     public $timestamps = true;
-    protected $fillable = ['user_id', 'plant_id', 'name', 'city'];
+    protected $fillable = ['user_id', 'plant_id', 'plant_name', 'plant_title', 'last_watering', 'city', 'is_outdoor'];
 
     public function user()
     {

@@ -29,11 +29,7 @@ class UserPlantController extends Controller
      *     tags={"UserPlant"},
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(
-     *             required={"name", "city"},
-     *             @OA\Property(property="name", type="string", example="Rose"),
-     *             @OA\Property(property="city", type="string", example="Paris")
-     *         ),
+     *         @OA\JsonContent(ref="#/components/schemas/UserPlant")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -63,11 +59,14 @@ class UserPlantController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string',
+            'plant_name' => 'required|string',
+            'plant_title' => 'required|string',
+            'last_watering' => 'required|date',
             'city' => 'required|string',
+            'is_outdoor' => 'required|boolean',
         ]);
     
-        $plant = $this->plantRepository->findByName($validated['name']);
+        $plant = $this->plantRepository->findByName($validated['plant_name']);
     
         if (!$plant) {
             return response()->json(['message' => 'Cette plante est inconnue'], 404);
@@ -76,8 +75,11 @@ class UserPlantController extends Controller
         $result = $this->userPlantRepository->findOrCreate([
             'user_id' => Auth::id(),
             'plant_id' => $plant->id,
-            'name' => $validated['name'],
+            'plant_name' => $validated['plant_name'],
+            'plant_title' => $validated['plant_title'],
+            'last_watering' => $validated['last_watering'],
             'city' => $validated['city'],
+            'is_outdoor' => $validated['is_outdoor'],
         ]);
     
         if ($result['created']) {

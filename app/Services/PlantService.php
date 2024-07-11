@@ -21,14 +21,19 @@ class PlantService {
 
     public function updatePlants(): void
     {
+        // Récupère toutes les plantes de la page 1
         $plants = $this->plantApiService->getAll();
+
         foreach ($plants['data'] as $plantData) {
+            // Récupère les détails de la plante
             $plantDetails = $this->plantApiService->getPlant($plantData['id']);
             
+            // Vérifie si les données sont complètes
             if (!isset($plantDetails['common_name'], $plantDetails['watering_general_benchmark'], $plantDetails['default_image']['small_url'])) {
                 continue;
             }
 
+            // Crée un tableau de données
             $data = [
                 'common_name' => $plantDetails['common_name'],
                 'watering_general_benchmark' => json_encode($plantDetails['watering_general_benchmark']),

@@ -183,21 +183,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "name",
-                                    "city"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Rose"
-                                    },
-                                    "city": {
-                                        "type": "string",
-                                        "example": "Paris"
-                                    }
-                                },
-                                "type": "object"
+                                "$ref": "#/components/schemas/UserPlant"
                             }
                         }
                     }
@@ -395,15 +381,31 @@
                         "type": "integer",
                         "example": 2
                     },
-                    "name": {
+                    "plant_name": {
                         "description": "Name of the plant",
                         "type": "string",
                         "example": "Rose"
+                    },
+                    "plant_title": {
+                        "description": "Title of the plant",
+                        "type": "string",
+                        "example": "Queen of the Garden"
+                    },
+                    "last_watering": {
+                        "description": "The last date the plant was watered",
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2023-04-01T00:00:00Z"
                     },
                     "city": {
                         "description": "City where the plant is located",
                         "type": "string",
                         "example": "Paris"
+                    },
+                    "is_outdoor": {
+                        "description": "Indicates if the plant is located outdoors",
+                        "type": "boolean",
+                        "example": true
                     }
                 },
                 "type": "object",

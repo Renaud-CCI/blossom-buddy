@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Models\UserPlant;
 use App\Repositories\UserPlantRepositoryInterface;
 use Illuminate\Support\Collection;
+use DateTime;
 
 class UserPlantRepository implements UserPlantRepositoryInterface
 {
@@ -27,8 +28,11 @@ class UserPlantRepository implements UserPlantRepositoryInterface
         $userPlant = new UserPlant();
         $userPlant->user_id = $data['user_id'];
         $userPlant->plant_id = $data['plant_id'];
-        $userPlant->name = $data['name'];
+        $userPlant->plant_name = $data['plant_name'];
+        $userPlant->plant_title = $data['plant_title'];
+        $userPlant->last_watering = new DateTime($data['last_watering']);;
         $userPlant->city = $data['city'];
+        $userPlant->is_outdoor = $data['is_outdoor'];
         $userPlant->save();
 
         return $userPlant;
