@@ -48,4 +48,9 @@ class UserPlantRepository implements UserPlantRepositoryInterface
     
         return $userPlants;
     }
+
+    public function findById(int $id): ?UserPlant
+    {
+        return UserPlant::with('plant')->find($id);
+    }
 }

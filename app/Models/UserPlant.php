@@ -14,18 +14,6 @@ use App\Models\Plant;
  *         name="UserPlant"
  *     ),
  *     @OA\Property(
- *         property="user_id",
- *         type="integer",
- *         description="ID of the user",
- *         example=1
- *     ),
- *     @OA\Property(
- *         property="plant_id",
- *         type="integer",
- *         description="ID of the plant",
- *         example=2
- *     ),
- *     @OA\Property(
  *         property="plant_name",
  *         type="string",
  *         description="Name of the plant",
@@ -40,7 +28,7 @@ use App\Models\Plant;
  *     @OA\Property(
  *         property="last_watering",
  *         type="string",
- *         format="date-time",
+ *         format="date",
  *         description="The last date the plant was watered",
  *         example="2023-04-01T00:00:00Z"
  *     ),

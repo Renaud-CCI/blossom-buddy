@@ -60,3 +60,6 @@ Route::get('/user/plants', [UserPlantController::class, 'getUserPlants'])->middl
 
 // Permettre à l'utilisateur de supprimer une plante qu'il a indiqué posséder
 Route::delete('/user/plant/{id}', [UserPlantController::class, 'destroy'])->middleware('auth:sanctum');
+
+// Route de test api météo
+Route::get('/user/plant/watering/{userPlantId}', [UserPlantController::class, 'shouldWatering'])->middleware('auth:sanctum');
