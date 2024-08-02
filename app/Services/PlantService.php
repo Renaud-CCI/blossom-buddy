@@ -19,12 +19,25 @@ class PlantService {
         $this->plantApiService = $plantApiService;
     }
 
+    /**
+     * Get Api plants and store them in DB
+     */
     public function updatePlants(): void
     {
         // Récupère toutes les plantes de la page 1
         $plants = $this->plantApiService->getAll();
 
-        foreach ($plants['data'] as $plantData) {
+        // Update ou enregistre les plantes en DB
+        $this->storePlantsInDb($plants['data']);
+    }
+
+    /**
+     * Store plants in DB
+     * @param array $plantsDatas
+     */
+    public function storePlantsInDb(array $plantsDatas): void
+    {
+        foreach ($plantsDatas as $plantData) {
             // Récupère les détails de la plante
             $plantDetails = $this->plantApiService->getPlant($plantData['id']);
             
