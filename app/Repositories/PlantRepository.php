@@ -3,10 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Plant;
-use App\Repositories\PlantRepositoryInterface;
+use App\Interfaces\IPlantRepository;
 
 
-class PlantRepository implements PlantRepositoryInterface
+class PlantRepository implements IPlantRepository
 {
     /**
      * Get all plants

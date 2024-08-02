@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Interfaces;
 
 use App\Models\User;
 
-interface UserRepositoryInterface
+interface IUserRepository
 {
     public function index(): array;
 

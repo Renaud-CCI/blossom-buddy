@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Interfaces;
 
 use App\Models\Weather;
 
 
-interface WeatherRepositoryInterface
+interface IWeatherRepository
 {
     public function getAll(): array;
 

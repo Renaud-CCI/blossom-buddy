@@ -7,26 +7,29 @@ use \Illuminate\Http\JsonResponse;
 use DateTime;
 use App\Models\UserPlant;
 use App\Models\Plant;
-use App\Repositories\PlantRepositoryInterface;
+use App\Interfaces\IPlantRepository;
 use App\Repositories\PlantRepository;
-use App\Repositories\UserPlantRepositoryInterface;
+use App\Interfaces\IUserPlantRepository;
 use App\Repositories\UserPlantRepository;
 use App\Services\WeatherService;
 use App\Services\VarDumpService;
+use App\Services\WateringService;
 
 class UserPlantController extends Controller
 {
-    private PlantRepositoryInterface $plantRepository;
-    private UserPlantRepositoryInterface $userPlantRepository;
+    private IPlantRepository $plantRepository;
+    private IUserPlantRepository $userPlantRepository;
     private WeatherService $weatherService;
     private VarDumpService $varDumpService;
+    private WateringService $wateringService;
 
-    public function __construct(PlantRepository $plantRepository, UserPlantRepository $userPlantRepository, WeatherService $weatherService, VarDumpService $varDumpService)
+    public function __construct(IPlantRepository $plantRepository, IUserPlantRepository $userPlantRepository, WeatherService $weatherService, VarDumpService $varDumpService, WateringService $wateringService)
     {
         $this->plantRepository = $plantRepository;
         $this->userPlantRepository = $userPlantRepository;
         $this->weatherService = $weatherService;
         $this->varDumpService = $varDumpService;
+        $this->wateringService = $wateringService;
     }
 
     /**
@@ -205,67 +208,12 @@ class UserPlantController extends Controller
     public function shouldWatering(int $userPlantId): JsonResponse
     {
         $userPlant = $this->userPlantRepository->findById($userPlantId);
+        
         if (!$userPlant) {
             return response()->json(['message' => 'Plante non trouvée'], 404);
         }
-        $userPlantLastWatering = new DateTime($userPlant->last_watering);
-        $userPlantIsOutdoor = $userPlant->is_outdoor;
-        $benchmarkValue = explode('-', json_decode($userPlant->plant->watering_general_benchmark, true)['value'])[0];
-    
-        $doNotWaterBefore = (clone $userPlantLastWatering)->modify("+$benchmarkValue days");
-        $today = new DateTime();
-    
-        // Vérification si la plante est à l'intérieur
-        if ($userPlantIsOutdoor == 0) {
-            if ($today < $doNotWaterBefore) {
-                return response()->json(['message' => 'Il ne faut pas arroser la plante'], 200);
-            } else {
-                return response()->json(['message' => 'Il faut arroser la plante'], 200);
-            }
-        }
-    
-        // Si la plante est à l'extérieur, continuer avec la logique existante
-        $weather = $this->weatherService->showCityWeather($userPlant->city);
-        $precipitations = json_decode($weather->getContent(), true);
-        $wateringAlert = 30; // Valeur en mm de pluies cumulées en dessous de laquelle il faudra arroser
-    
-    
-        if ($today < $doNotWaterBefore) {
-            return response()->json(['message' => 'Il ne faut pas arroser la plante, trop tôt'], 200);
-        }
-    
-        $cumulativeRainfall = 0;
-        foreach ($precipitations as $date => $mm) {
-            $precipitationDate = new DateTime($date);
-            if ($precipitationDate <= $today) {
-                $cumulativeRainfall += $mm;
-            }
-        }
-    
-        if ($cumulativeRainfall < $wateringAlert) {
-            foreach ($precipitations as $date => $mm) {
-                $precipitationDate = new DateTime($date);
-                if ($precipitationDate > $today && $mm >= 10) {
-                    return response()->json(['message' => 'Il ne faut pas arroser la plante, il pleut bientôt'], 200);
-                }
-            }
-            $waterNeeded = $wateringAlert - $cumulativeRainfall;
 
-            if ($waterNeeded > 0 && $waterNeeded <= 5) {
-                $wateringMessage = "un demi arrosoir";
-            } elseif ($waterNeeded > 5 && $waterNeeded <= 10) {
-                $wateringMessage = "un arrosoir";
-            } elseif ($waterNeeded > 10 && $waterNeeded <= 15) {
-                $wateringMessage = "un arrosoir et demi";
-            } elseif ($waterNeeded > 15 && $waterNeeded <= 20) {
-                $wateringMessage = "deux arrosoirs";
-            } else {
-                $wateringMessage = "au moins deux arrosoirs";
-            }
-            return response()->json(['message' => "Il faut arroser la plante de $wateringMessage par mètre carré"], 200);
-        }
-    
-        return response()->json(['message' => 'Il ne faut pas arroser la plante, assez de pluie récemment'], 200);
+        return $this->wateringService->wateringStrategy($userPlant);
     }
 
     public function testCityWeather(string $city): JsonResponse

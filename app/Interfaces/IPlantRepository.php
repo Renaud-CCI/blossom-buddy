@@ -1,9 +1,9 @@
 <?php
-namespace App\Repositories;
+namespace App\Interfaces;
 
 use App\Models\Plant;
 
-interface PlantRepositoryInterface
+interface IPlantRepository
 {
     public function index(): array;
 

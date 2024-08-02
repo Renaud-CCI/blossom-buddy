@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Repositories\WeatherRepositoryInterface;
+use App\Interfaces\IWeatherRepository;
 use App\Repositories\WeatherRepository;
 use App\Services\WeatherApiServiceInterface;
 use App\Services\WeatherApiService;
@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 
 class WeatherService {
 
-    private WeatherRepositoryInterface $weatherRepository;
+    private IWeatherRepository $weatherRepository;
     private WeatherApiServiceInterface $weatherApiService;
     private VarDumpService $varDumpService;
 

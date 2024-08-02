@@ -3,6 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Repositories\PlantRepository;
+use App\Interfaces\IPlantRepository;
+use App\Repositories\UserPlantRepository;
+use App\Interfaces\IUserPlantRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -11,10 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-            \App\Repositories\Contracts\PlantRepositoryInterface::class,
-            \App\Repositories\PlantRepository::class
-        );
+        $this->app->bind(IPlantRepository::class, PlantRepository::class);
+        $this->app->bind(IUserPlantRepository::class, UserPlantRepository::class);
     }
 
     /**

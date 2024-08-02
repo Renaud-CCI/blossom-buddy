@@ -2,11 +2,11 @@
 namespace App\Repositories;
 
 use App\Models\UserPlant;
-use App\Repositories\UserPlantRepositoryInterface;
+use App\Interfaces\IUserPlantRepository;
 use Illuminate\Support\Collection;
 use DateTime;
 
-class UserPlantRepository implements UserPlantRepositoryInterface
+class UserPlantRepository implements IUserPlantRepository
 {
     public function findOrCreate(array $data): array
     {

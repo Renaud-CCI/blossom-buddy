@@ -3,9 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\User;
-use App\Repositories\UserRepositoryInterface;
+use App\Interfaces\IUserRepository;
 
-class UserRepository implements UserRepositoryInterface
+class UserRepository implements IUserRepository
 {
     /**
      * Return all Users

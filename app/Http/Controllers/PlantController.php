@@ -5,13 +5,13 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use \Illuminate\Http\JsonResponse;
 use App\Models\Plant;
-use App\Repositories\PlantRepositoryInterface;
+use App\Interfaces\IPlantRepository;
 use App\Repositories\PlantRepository;
 use App\Services\PlantService;
 
 class PlantController extends Controller
 {
-    private PlantRepositoryInterface $plantRepository;
+    private IPlantRepository $plantRepository;
     private PlantService $plantService;
 
     public function __construct(PlantRepository $plantRepository, PlantService $plantService)

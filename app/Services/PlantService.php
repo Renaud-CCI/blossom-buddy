@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use Illuminate\Http\JsonResponse;
-use App\Repositories\PlantRepositoryInterface;
+use App\Interfaces\IPlantRepository;
 use App\Repositories\PlantRepository;
 use App\Services\PlantApiServiceInterface;
 use App\Services\PerenualApiService;
 
 class PlantService {
 
-    private PlantRepositoryInterface $plantRepository;
+    private IPlantRepository $plantRepository;
     private PlantApiServiceInterface $plantApiService;
 
     public function __construct(PlantRepository $plantRepository, PerenualApiService $plantApiService)
@@ -62,4 +62,5 @@ class PlantService {
             }
         }
     }
+
 }

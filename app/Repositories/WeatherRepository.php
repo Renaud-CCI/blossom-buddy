@@ -3,10 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\Weather;
-use App\Repositories\WeatherRepositoryInterface;
+use App\Interfaces\IWeatherRepository;
 
 
-class WeatherRepository implements WeatherRepositoryInterface
+class WeatherRepository implements IWeatherRepository
 {
     public function getAll(): array
     {
